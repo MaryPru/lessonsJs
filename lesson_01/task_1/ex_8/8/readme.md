@@ -1,0 +1,8 @@
+https://learn.javascript.ru/logical-operators
+Какие из перечисленных ниже alert выполнятся?
+
+Какие конкретно значения будут результатами выражений в условиях if(...)?
+
+if (-1 || 0) alert( 'first' );
+if (-1 && 0) alert( 'second' );
+if (null || -1 && 1) alert( 'third' );
