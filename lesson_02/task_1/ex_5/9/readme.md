@@ -1,0 +1,22 @@
+https://learn.javascript.ru/array-methods
+У вас есть массив объектов user, и у каждого из объектов есть name, surname и id.
+
+Напишите код, который создаст ещё один массив объектов с параметрами id и fullName, где fullName – состоит из name и surname.
+
+Например:
+Напишите функцию sortByAge(users), которая принимает массив объектов со свойством age и сортирует их по нему.
+
+Например:
+
+let vasya = { name: "Вася", age: 25 };
+let petya = { name: "Петя", age: 30 };
+let masha = { name: "Маша", age: 28 };
+
+let arr = [ vasya, petya, masha ];
+
+sortByAge(arr);
+
+// теперь: [vasya, masha, petya]
+alert(arr[0].name); // Вася
+alert(arr[1].name); // Маша
+alert(arr[2].name); // Петя
