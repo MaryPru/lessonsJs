@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<style>
+.parent{
+    cursor: pointer;
+}
+
+.parent li:hover{
+    font-weight: bolder;
+}
+
+.close{
+    display: none;
+}
+
+</style>
+<body>
+
+
+<ul class="tree open parent" id="tree">
+    <li class="parent">Животные
+        <ul class="open">
+            <li class="parent">Млекопитающие
+                <ul class="open">
+                    <li>Коровы</li>
+                    <li>Ослы</li>
+                    <li>Собаки</li>
+                    <li>Тигры</li>
+                </ul>
+            </li>
+            <li class="parent">Другие
+                <ul class="open">
+                    <li>Змеи</li>
+                    <li>Птицы</li>
+                    <li>Ящерицы</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li class="parent">Рыбы
+        <ul class="open">
+            <li class="parent">Аквариумные
+                <ul class="open">
+                    <li>Гуппи</li>
+                    <li>Скалярии</li>
+                </ul>
+            </li>
+            <li class="parent">Морские
+                <ul class="open">
+                    <li>Морская форель</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+<script src="script.js"></script>
+</body>
+</html>
+
+
