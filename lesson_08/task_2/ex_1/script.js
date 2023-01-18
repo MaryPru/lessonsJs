@@ -10,6 +10,7 @@ age.setAttribute('type', 'number')
 let message=form.elements.message;
 message.setAttribute('minlength',12)
 let minlength=message.attributes.minLength.value;
+message.setAttribute('required','')
 
 let inputs=[name,lastname,age,message]
 let input=document.querySelector('input')
@@ -19,18 +20,20 @@ error.className = "error";
 form.append(error)
 error.innerHTML = 'Пожалуйста, заполните обязательные поля'
 
-form.onclick=function (e){
+
+form.addEventListener('click', (e) => {
     error.style.display='none';
     inputs.forEach(input=>{
         if(input.value===''){
-            input.classList.add('invalid');
+            e.target.classList.add('invalid');
             error.style.display='block';
         } else{
-            input.classList.remove('invalid');
+            e.target.classList.remove('invalid');
             return true
         }
     })
-}
+
+})
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -70,5 +73,15 @@ message.onblur=function (){
     }
 }
 
+message.addEventListener('blur', (e) => {
+    let length = message.value.length
+    if(length<minlength){
+       e.target.classList.add('invalid');
+        error2.style.display='inline-block'
+    } else {
+       e.target.classList.remove('invalid');
+        error2.style.display='none'
+    }
+})
 
 

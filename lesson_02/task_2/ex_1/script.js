@@ -1,21 +1,33 @@
-function Splice(array, index, count)
-{
-    let newArray = [];
-    if( count > 0 )
-    { count--}
-    else
-    { count++}
-    for(let i = 0; i <array.length; i++)
-    {
-        if(!((i <= index + count && i >=  index) || (i <= index && i >=  index + count)))
-        {
-            newArray.push(array[i])
+    function mySplice(arr, start, delCount,insertVal) {
+       let result = [];
+       let removed = [];
+
+        for (let i = 0; i < start; i++) {
+            result[i] = arr[i];
         }
+
+        for (let i = 3; i < arguments.length; i++) {
+            result.push(arguments[i]);
+        }
+
+        for (let i = start; i < start + delCount; i++) {
+            removed.push(arr[i]);
+        }
+
+        for (let i = start + (delCount || 0); i < arr.length; i++) {
+            result.push(arr[i]);
+        }
+
+        arr.length = 0;
+        i = result.length;
+        while (i--) {
+            arr[i] = result[i];
+        }
+
+        return removed;
     }
-    return newArray;
-}
 
-let arr = [0,1,2,3,4,5,6,7,8];
+    const arr=[1,2,3,4,5,6,7,8,9]
 
-console.log(Splice(arr, 4, 2)) ;
-console.log(arr);
+    console.log(mySplice( arr, 3, 2 ,7) );
+    console.log( arr );
