@@ -11,5 +11,8 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="dayjs" level="application" />
+    <orderEntry type="library" name="slick-carousel" level="application" />
+    <orderEntry type="library" name="jquery.fancybox" level="application" />
+    <orderEntry type="library" name="fancybox" level="application" />
   </component>
 </module>
