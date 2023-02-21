@@ -1,3 +1,5 @@
+import DB from './Db.js'
+
 $(document).ready(function () {
 
 
