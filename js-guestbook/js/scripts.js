@@ -1,43 +1,44 @@
-import {db} from './db.js'
+import {db} from './db.js';
 
 $(document).ready(function () {
 
     const initItems = () => {
         let list = $('#comments-list');
-        list.children('.card').remove()
+        list.children('.card').remove();
 
         const allRecords = db.getAllRecords();
         allRecords.forEach((record) => {
-            let card = createCard(record)
-            list.append(card)
+            let card = createCard(record);
+            list.append(card);
         })
     }
-    initItems()
 
-    $('.card').find('#add-comments').find('#name').attr('required', true)
-    $('.card').find('#add-comments').find('#message').attr('required', true)
+    initItems();
+
+    $('.card').find('#add-comments').find('#name').attr('required', true);
+    $('.card').find('#add-comments').find('#message').attr('required', true);
 
     function initForm(selector) {
-        let name = $(selector).find('.name').val()
-        let message = $(selector).find('.message').val()
-        let date = dayjs(new Date).format('HH:mm DD.MM.YYYY')
+        let name = $(selector).find('.name').val();
+        let message = $(selector).find('.message').val();
+        let date = dayjs(new Date).format('HH:mm DD.MM.YYYY');
         let id = crypto.randomUUID();
-        let comments = []
+        let comments = [];
         return {name, message, date, id, comments}
     }
 
     function initComentedForm(selector) {
-        let nameComment = $(selector).find('.name').val()
-        let messageComment = $(selector).find('.message').val()
-        let dateComment = dayjs(new Date).format('HH:mm DD.MM.YYYY')
+        let nameComment = $(selector).find('.name').val();
+        let messageComment = $(selector).find('.message').val();
+        let dateComment = dayjs(new Date).format('HH:mm DD.MM.YYYY');
         return {nameComment, messageComment, dateComment}
     }
 
     function initEditedForm(selector) {
-        let name = $(selector).find('.name').val()
-        let message = $(selector).find('.message').val()
-        let date = dayjs(new Date).format('HH:mm DD.MM.YYYY')
-        let id = $(selector).data().id
+        let name = $(selector).find('.name').val();
+        let message = $(selector).find('.message').val();
+        let date = dayjs(new Date).format('HH:mm DD.MM.YYYY');
+        let id = $(selector).data().id;
         return {name, message, date, id}
     }
 
@@ -58,8 +59,8 @@ $(document).ready(function () {
     }
 
     function createCard(record) {
-        const {name, message, date, id, comments} = record
-        let commentsList = comments.map((comment) => createComment(comment))
+        const {name, message, date, id, comments} = record;
+        let commentsList = comments.map((comment) => createComment(comment));
 
         let card = `
                  <article class="card parent" data-id="${id}">
@@ -99,38 +100,36 @@ $(document).ready(function () {
     }
 
     $('#comments-list ').on('click', '.card .btn-danger', function (e) {
-        let deletedCard = $(e.currentTarget).closest('.card')
-        deletedCard.next('.card.mt-2').remove()
-        deletedCard.remove()
-        db.deleteRecord(deletedCard.data().id)
-        $.iaoAlert({
-            msg: `record #${deletedCard.data().id} delete`,
-            alertClass: 'green'
-        })
+        let deletedCard = $(e.currentTarget).closest('.card');
+        deletedCard.next('.card.mt-2').remove();
+        deletedCard.remove();
+        db.deleteRecord(deletedCard.data().id);
     })
 
     $('#comments-list ').on('click', '.card .btn-secondary', function (e) {
-        let comentedCard = $(e.currentTarget).closest('.card')
-        comentedCard.addClass('commented')
-        db.updateRecord(comentedCard.data().id)
+        let comentedCard = $(e.currentTarget).closest('.card');
+        comentedCard.addClass('commented');
+        db.updateRecord(comentedCard.data().id);
     })
 
     $('#comments-list ').on('submit', '#add-comments', function (e) {
         e.preventDefault();
-
+        const allRecords = db.getAllRecords();
         let commentData = initComentedForm($(e.currentTarget));
-        let commentCard = $(e.currentTarget).closest('.card.commented').find('.sub-comments-list')
-        let newComment = createComment(commentData);
-        commentCard.append(newComment)
-        e.currentTarget.reset()
-        db.addRecords(commentData)
-        $.fancybox.open({
-            src: '#pop-up',
-            type: 'inline',
-            modal: true,
-            smallBtn: true,
-        });
-        $(e.currentTarget).closest('.card.commented').removeClass('commented')
+        let id = $(e.currentTarget).closest('.card.commented').data().id;
+        let commentedCardData = allRecords.find(({...record}) => record.id === `${id}`);
+
+        if (!commentedCardData) {
+            return;
+        }
+
+        db.updateRecord({
+            ...commentedCardData,
+            comments:  [...commentedCardData.comments,commentData]
+        })
+
+        initItems();
+        $(e.currentTarget).closest('.card.commented').removeClass('commented');
     })
 
     $('.btn-success').on('click', function () {
@@ -142,26 +141,26 @@ $(document).ready(function () {
         });
     })
 
-    $('#add-record').find('#name-record').attr('required', true)
-    $('#add-record').find('#message-record').attr('required', true)
+    $('#add-record').find('#name-record').attr('required', true);
+    $('#add-record').find('#message-record').attr('required', true);
 
     $('#add-record').on('submit', function (e) {
         e.preventDefault();
         let cardData = initForm($(this));
         let list = $('#comments-list');
         let newCard = createCard(cardData);
-        list.append(newCard)
-        e.currentTarget.reset()
-        db.addRecords(cardData)
+        list.append(newCard);
+        e.currentTarget.reset();
+        db.addRecords(cardData);
         $.fancybox.close({
             src: '#pop-up_addForm'
         });
     })
 
     $('#comments-list ').on('click', '.card .edit-button', function (e) {
-        $(e.currentTarget).closest('.card').addClass('edited')
-        let editedCard = $(e.currentTarget).closest('.edited')
-        let editedCardId = editedCard.data().id
+        $(e.currentTarget).closest('.card').addClass('edited');
+        let editedCard = $(e.currentTarget).closest('.edited');
+        let editedCardId = editedCard.data().id;
         const allRecords = db.getAllRecords();
         let editRecord = allRecords.filter(({...record}) => record.id == editedCardId);
 
@@ -171,18 +170,18 @@ $(document).ready(function () {
             modal: true,
             smallBtn: true,
             'beforeLoad': function () {
-                $('#message-rerecord').val(editRecord[0].message)
-                $('#name-rerecord').val(editRecord[0].name)
-                $('#name-rerecord').attr('readonly', true)
-                $("#edit-record").data("id", `${editRecord[0].id}`)
+                $('#message-rerecord').val(editRecord[0].message);
+                $('#name-rerecord').val(editRecord[0].name);
+                $('#name-rerecord').attr('readonly', true);
+                $("#edit-record").data("id", `${editRecord[0].id}`);
             }
         });
     })
 
     $('#edit-record').on('submit', function (e) {
         e.preventDefault();
-        let editedCard = $('.edited')
-        let editedCardId = editedCard.data().id
+        let editedCard = $('.edited');
+        let editedCardId = editedCard.data().id;
         const allRecords = db.getAllRecords();
         let editRecord = allRecords.filter(({...record}) => record.id === `${editedCardId}`);
         let cardEditedData = initEditedForm($(e.target));
@@ -197,19 +196,15 @@ $(document).ready(function () {
         $.fancybox.close({
             src: '#pop-up_editForm'
         });
-        $.iaoAlert({
-            msg: "record update",
-            alertClass: 'green'
-        })
 
-        let editedFormId = $(e.target).data().id
-        let cards = $('#comments-list .card.parent')
+        let editedFormId = $(e.target).data().id;
+        let cards = $('#comments-list .card.parent');
         cards.each(function() {
             if($( this ).data().id==editedFormId){
                 $( this).find('.hidden').css('display', 'inline-block');
             }
         })
-        $('.card').removeClass('edited')
+        $('.card').removeClass('edited');
     })
 
     $('#edit-record').on('click', '.cancel', function (e) {
@@ -253,7 +248,7 @@ $(document).ready(function () {
 
     let parent = ($('#comments-list article.card.parent'))
     $("#search-field").keyup(function () {
-        let filter = $(this).val()
+        let filter = $(this).val();
 
         parent.each(function () {
             if ($(this).find('.cart-title').text().search(new RegExp(filter, "gi")) < 0) {
@@ -267,15 +262,15 @@ $(document).ready(function () {
 
     $('#search').on('submit', function (e) {
         e.preventDefault();
-        let startDate = Date.parse($('#search-date-from').val())
-        let endDate = Date.parse($('#search-date-to').val())
+        if($("#search-field").val()===''){
+            return
+        }
+        let startDate = Date.parse($('#search-date-from').val());
+        let endDate = Date.parse($('#search-date-to').val());
 
         parent.each(function () {
-            let date = $(this).find('.card-footer small').text().slice(16, 26)
-            let dateTime = Date.parse(dayjs(date).format('YYYY-DD-MM')) - 7200000
-            console.log(startDate, 'startDate')
-            console.log(endDate, 'endDate')
-            console.log(dateTime, 'dateTime')
+            let date = $(this).find('.card-footer small').text().slice(16, 26);
+            let dateTime = Date.parse(dayjs(date).format('YYYY-DD-MM')) - 7200000;
             if (dateTime >= startDate && dateTime <= endDate) {
                 $(this).show();
             } else {
