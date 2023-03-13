@@ -15,8 +15,6 @@ $(document).ready(function () {
 
     initItems();
 
-    $('.card').find('#add-comments').find('#name').attr('required', true);
-    $('.card').find('#add-comments').find('#message').attr('required', true);
 
     function initForm(selector) {
         let name = $(selector).find('.name').val();
@@ -85,11 +83,11 @@ $(document).ready(function () {
                 <h4 class="cart-title">Add new comments</h4>
             <div class="form-group">
                 <label for="name">name</label>
-                <input type="text" class="form-control name" id="name">
+                <input type="text" class="form-control name" id="name" required>
             </div>
             <div class="form-group">
                 <label for="message">message</label>
-                <textarea name="message" class="form-control message" id="message" cols="30" rows="2"></textarea>
+                <textarea name="message" class="form-control message" id="message" cols="30" rows="2" required></textarea>
             </div>
                 <button class="btn btn-primary">add comment</button>
             </div>
@@ -101,15 +99,14 @@ $(document).ready(function () {
 
     $('#comments-list ').on('click', '.card .btn-danger', function (e) {
         let deletedCard = $(e.currentTarget).closest('.card');
-        deletedCard.next('.card.mt-2').remove();
-        deletedCard.remove();
-        db.deleteRecord(deletedCard.data().id);
+        console.log(deletedCard.data().id)
+        db.deleteRecord(`${deletedCard.data().id}`);
+        initItems()
     })
 
     $('#comments-list ').on('click', '.card .btn-secondary', function (e) {
         let comentedCard = $(e.currentTarget).closest('.card');
         comentedCard.addClass('commented');
-        db.updateRecord(comentedCard.data().id);
     })
 
     $('#comments-list ').on('submit', '#add-comments', function (e) {
@@ -125,7 +122,7 @@ $(document).ready(function () {
 
         db.updateRecord({
             ...commentedCardData,
-            comments:  [...commentedCardData.comments,commentData]
+            comments: [...commentedCardData.comments, commentData]
         })
 
         initItems();
@@ -141,17 +138,13 @@ $(document).ready(function () {
         });
     })
 
-    $('#add-record').find('#name-record').attr('required', true);
-    $('#add-record').find('#message-record').attr('required', true);
 
     $('#add-record').on('submit', function (e) {
         e.preventDefault();
         let cardData = initForm($(this));
-        let list = $('#comments-list');
-        let newCard = createCard(cardData);
-        list.append(newCard);
         e.currentTarget.reset();
         db.addRecords(cardData);
+        initItems()
         $.fancybox.close({
             src: '#pop-up_addForm'
         });
@@ -173,7 +166,7 @@ $(document).ready(function () {
                 $('#message-rerecord').val(editRecord[0].message);
                 $('#name-rerecord').val(editRecord[0].name);
                 $('#name-rerecord').attr('readonly', true);
-                $("#edit-record").data("id", `${editRecord[0].id}`);
+                $("#edit-record").attr('data-id', `${editRecord[0].id}`);
             }
         });
     })
@@ -199,9 +192,9 @@ $(document).ready(function () {
 
         let editedFormId = $(e.target).data().id;
         let cards = $('#comments-list .card.parent');
-        cards.each(function() {
-            if($( this ).data().id==editedFormId){
-                $( this).find('.hidden').css('display', 'inline-block');
+        cards.each(function () {
+            if ($(this).data().id == editedFormId) {
+                $(this).find('.hidden').css('display', 'inline-block');
             }
         })
         $('.card').removeClass('edited');
@@ -246,8 +239,9 @@ $(document).ready(function () {
         buttonText: "Выбрать дату"
     });
 
-    let parent = ($('#comments-list article.card.parent'))
+
     $("#search-field").keyup(function () {
+        let parent = ($('#comments-list article.card.parent'))
         let filter = $(this).val();
 
         parent.each(function () {
@@ -262,7 +256,7 @@ $(document).ready(function () {
 
     $('#search').on('submit', function (e) {
         e.preventDefault();
-        if($("#search-field").val()===''){
+        if ($("#search-field").val() === '') {
             return
         }
         let startDate = Date.parse($('#search-date-from').val());
